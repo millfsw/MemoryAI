@@ -21,8 +21,8 @@ async_engine = create_async_engine(
 
 def create_db_and_tables():
     """Create database tables (synchronous, for migrations)."""
-    # Configure relationships before creating tables
-    SQLModel.registry.configure()
+    # Models are already imported at module level
+    # Relationships are configured automatically when models are loaded
     SQLModel.metadata.create_all(engine)
 
 
