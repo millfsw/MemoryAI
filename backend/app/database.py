@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from contextlib import asynccontextmanager
 
 from app.settings import settings
+# Import models to register them with SQLModel
+from app.models import User, Deck, Flashcard  # noqa: F401
 
 # Sync engine for migrations and CLI tools
 engine = create_engine(
@@ -19,6 +21,8 @@ async_engine = create_async_engine(
 
 def create_db_and_tables():
     """Create database tables (synchronous, for migrations)."""
+    # Configure relationships before creating tables
+    SQLModel.registry.configure()
     SQLModel.metadata.create_all(engine)
 
 

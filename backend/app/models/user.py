@@ -1,6 +1,9 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from datetime import datetime
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
+
+if TYPE_CHECKING:
+    from app.models.deck import Deck
 
 
 class UserBase(SQLModel):
@@ -11,10 +14,13 @@ class UserBase(SQLModel):
 class User(UserBase, table=True):
     """User table model."""
     __tablename__ = "users"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     password_hash: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # Relationships
+    decks: list["Deck"] = Relationship(back_populates="user")
 
 
 class UserCreate(SQLModel):
