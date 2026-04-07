@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=${POSTGRES_DB:-memoryai}
+      - DB_USER=${POSTGRES_USER:-memoryai}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-memoryai_password}
+      - AI_API_KEY=${AI_API_KEY}
+      - AI_API_BASE_URL=${AI_API_BASE_URL:-https://api.openai.com/v1}
+      - AI_MODEL=${AI_MODEL:-gpt-3.5-turbo}
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
+      - DEBUG=${DEBUG:-false}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - memoryai-network
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "python -m app.run"
+
+  postgres:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-memoryai}
+      - POSTGRES_USER=${POSTGRES_USER:-memoryai}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-memoryai_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/app/data/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-memoryai} -d ${POSTGRES_DB:-memoryai}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - memoryai-network
+
+  frontend:
+    build:
+      context: ./client-web-react
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    environment:
+      - VITE_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - memoryai-network
+    volumes:
+      - ./client-web-react:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:
+
+networks:
+  memoryai-network:
+    driver: bridge
