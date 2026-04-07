@@ -34,7 +34,7 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
         deck = Deck(
             title="Generated Deck",
             description=f"Generated from text ({len(flashcard_pairs)} cards)",
-            user_id=0  # TODO: Get from authenticated user
+            # user_id=None  # Will be set when auth is implemented)
         )
         
         session.add(deck)
@@ -79,7 +79,6 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
         deck = Deck(
             title="Generated Deck",
             description=f"Generated from text ({len(flashcard_pairs)} cards + summary)",
-            user_id=0  # TODO: Get from authenticated user
         )
         
         session.add(deck)

@@ -1,6 +1,10 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 from datetime import datetime
 from sqlmodel import SQLModel, Field, Relationship
+
+if TYPE_CHECKING:
+    from app.models.flashcard import Flashcard
+    from app.models.user import User
 
 
 class DeckBase(SQLModel):
@@ -12,11 +16,11 @@ class DeckBase(SQLModel):
 class Deck(DeckBase, table=True):
     """Deck table model."""
     __tablename__ = "decks"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="users.id", index=True)
+    user_id: Optional[int] = Field(default=None, foreign_key="users.id", index=True)  # Made optional for MVP
     created_at: datetime = Field(default_factory=datetime.utcnow)
-    
+
     # Relationships
     flashcards: list["Flashcard"] = Relationship(back_populates="deck")
     user: Optional["User"] = Relationship(back_populates="decks")
@@ -33,5 +37,5 @@ class DeckResponse(SQLModel):
     id: int
     title: str
     description: Optional[str]
-    user_id: int
+    user_id: Optional[int]
     created_at: datetime
