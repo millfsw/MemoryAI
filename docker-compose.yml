@@ -24,10 +24,6 @@ services:
         condition: service_healthy
     networks:
       - memoryai-network
-    volumes:
-      - ./backend:/app
-    command: >
-      sh -c "python -m app.run"
 
   postgres:
     image: postgres:15-alpine
@@ -55,16 +51,13 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - "${FRONTEND_PORT:-5173}:5173"
+      - "${FRONTEND_PORT:-5173}:80"
     environment:
       - VITE_API_URL=http://backend:8000
     depends_on:
       - backend
     networks:
       - memoryai-network
-    volumes:
-      - ./client-web-react:/app
-      - /app/node_modules
 
 volumes:
   postgres_data:

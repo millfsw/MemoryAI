@@ -1,0 +1,19 @@
+version: '3.8'
+
+# Development override - uses volume mounts for live reload
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  backend:
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "pip install -e . && python -m app.run"
+
+  frontend:
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    volumes:
+      - ./client-web-react:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
