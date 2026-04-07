@@ -80,19 +80,19 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '16px' }}>
           <label htmlFor="file-upload" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-            Upload File (.txt):
+            Upload File (.txt, .pdf, .docx):
           </label>
           <input
             type="file"
             id="file-upload"
-            accept=".txt,.md,.text"
+            accept=".txt,.pdf,.docx,.md,.text"
             onChange={handleFileChange}
             disabled={loading}
             style={{ padding: '8px' }}
           />
           {uploadedFile && (
             <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
-              ✅ File: {uploadedFile.name}
+              ✅ File: {uploadedFile.name} ({(uploadedFile.size / 1024).toFixed(2)} KB)
               <button 
                 type="button" 
                 onClick={clearFile}

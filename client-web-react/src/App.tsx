@@ -60,8 +60,42 @@ function App() {
   };
 
   const handleFileUpload = async (file: File, numCards: number) => {
-    const text = await file.text();
-    await handleGenerate(text, numCards);
+    setLoading(true);
+    setError(null);
+    setFlashcards([]);
+    setSummary('');
+    
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('num_cards', numCards.toString());
+      formData.append('mode', generationMode);
+      
+      const response = await fetch(`${apiUrl}/generate/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ detail: response.statusText }));
+        throw new Error(errorData.detail || 'Failed to generate content from file');
+      }
+
+      const data = await response.json();
+      
+      if (data.flashcards) {
+        setFlashcards(data.flashcards);
+      }
+      if (data.summary) {
+        setSummary(data.summary);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('File upload error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
