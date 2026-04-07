@@ -57,7 +57,7 @@ async def login(user_data: UserCreate, session: Session = Depends(get_session)):
             detail="Incorrect username or password"
         )
     
-    # Create access token
+    # Create access token with user ID as subject
     access_token = create_access_token(
         data={"sub": str(user.id), "username": user.username}
     )

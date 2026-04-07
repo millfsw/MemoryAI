@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlmodel import Session, select
 from typing import List, Optional
+from datetime import datetime
 from app.database import get_session
 from app.models.deck import Deck, DeckCreate, DeckResponse
 from app.models.flashcard import Flashcard, FlashcardCreate, FlashcardResponse
+from app.models.user import User
 from app.services.ai_service import generate_flashcards, generate_summary, generate_both
 from app.services.file_service import extract_text, validate_file
+from app.services.auth_service import decode_access_token
 from pydantic import BaseModel
+from fastapi import Header
 
 router = APIRouter(prefix="/generate", tags=["generation"])
 
@@ -23,7 +27,21 @@ class GenerateResponse(BaseModel):
     summary: Optional[str] = None
 
 
-async def process_content(text: str, num_cards: int, mode: str, session: Session):
+def get_current_user(authorization: Optional[str] = Header(None)) -> Optional[User]:
+    """Extract current user from JWT token."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    
+    token = authorization.replace("Bearer ", "")
+    payload = decode_access_token(token)
+    
+    if not payload:
+        return None
+    
+    return None  # Will be implemented when we query from DB
+
+
+async def process_content(text: str, num_cards: int, mode: str, session: Session, user_id: Optional[int] = None):
     """Process text and generate content."""
     
     if mode == "flashcards":
@@ -34,7 +52,7 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
         deck = Deck(
             title="Generated Deck",
             description=f"Generated from text ({len(flashcard_pairs)} cards)",
-            # user_id=None  # Will be set when auth is implemented)
+            user_id=user_id,
         )
         
         session.add(deck)
@@ -79,6 +97,7 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
         deck = Deck(
             title="Generated Deck",
             description=f"Generated from text ({len(flashcard_pairs)} cards + summary)",
+            user_id=user_id,
         )
         
         session.add(deck)
@@ -111,12 +130,21 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
 @router.post("", response_model=GenerateResponse)
 async def generate_content(
     request: GenerateRequest,
+    authorization: Optional[str] = Header(None),
     session: Session = Depends(get_session)
 ):
     """Generate flashcards and/or summary from text using AI."""
     
     try:
-        return await process_content(request.text, request.num_cards, request.mode, session)
+        # Extract user_id from token if available
+        user_id = None
+        if authorization and authorization.startswith("Bearer "):
+            token = authorization.replace("Bearer ", "")
+            payload = decode_access_token(token)
+            if payload and "sub" in payload:
+                user_id = int(payload["sub"])
+        
+        return await process_content(request.text, request.num_cards, request.mode, session, user_id)
     
     except Exception as e:
         raise HTTPException(
@@ -130,6 +158,7 @@ async def upload_and_generate(
     file: UploadFile = File(...),
     num_cards: int = Form(10),
     mode: str = Form("both"),
+    authorization: Optional[str] = Header(None),
     session: Session = Depends(get_session)
 ):
     """Upload a file and generate flashcards/summary from it."""
@@ -157,8 +186,16 @@ async def upload_and_generate(
                 detail="No text content found in file"
             )
         
+        # Extract user_id from token
+        user_id = None
+        if authorization and authorization.startswith("Bearer "):
+            token = authorization.replace("Bearer ", "")
+            payload = decode_access_token(token)
+            if payload and "sub" in payload:
+                user_id = int(payload["sub"])
+        
         # Process content
-        return await process_content(text, num_cards, mode, session)
+        return await process_content(text, num_cards, mode, session, user_id)
     
     except HTTPException:
         raise
