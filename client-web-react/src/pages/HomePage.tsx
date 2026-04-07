@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import GenerationForm from '../components/GenerationForm';
 import FlashcardDisplay from '../components/FlashcardDisplay';
 import SummaryDisplay from '../components/SummaryDisplay';
+import HeaderBar from '../components/HeaderBar';
 
 interface Flashcard {
   id: number;
@@ -20,6 +21,7 @@ function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [generationMode, setGenerationMode] = useState<'flashcards' | 'summary' | 'both'>('both');
   const [generatedDeckId, setGeneratedDeckId] = useState<number | null>(null);
+  const [showCardCount, setShowCardCount] = useState(false);
 
   const handleGenerate = async (text: string, numCards: number) => {
     setLoading(true);
@@ -125,40 +127,23 @@ function HomePage() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
     <div className="app">
-      <header className="app-header">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
-          <div>
-            <h1>🧠 MemoryAI</h1>
-            <p>AI-powered flashcard generator for efficient exam preparation</p>
-          </div>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-            {user && (
-              <>
-                <span style={{ color: 'white', fontWeight: 600 }}>👋 Hi, {user.username}!</span>
-                <button onClick={() => navigate('/my-decks')} className="btn-secondary" style={{ padding: '8px 16px' }}>
-                  📚 My Decks
-                </button>
-                <button onClick={handleLogout} className="btn-secondary" style={{ padding: '8px 16px' }}>
-                  Logout
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <HeaderBar title="MemoryAI" subtitle="Study Material Generator" hideGenerate />
 
       <main className="container">
-        <GenerationForm 
+        <GenerationForm
           onGenerate={handleGenerate}
           onFileUpload={handleFileUpload}
           loading={loading}
           mode={generationMode}
-          onModeChange={setGenerationMode}
+          onModeChange={(mode) => {
+            setGenerationMode(mode);
+            setShowCardCount(true);
+          }}
         />
 
         {error && <div className="error">{error}</div>}

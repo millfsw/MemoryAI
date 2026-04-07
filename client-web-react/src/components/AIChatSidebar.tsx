@@ -14,7 +14,7 @@ interface AIChatSidebarProps {
 
 function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarProps) {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: '👋 Привет! Задай мне вопрос по материалу, и я помогу разобраться!' }
+    { role: 'assistant', content: '👋 Hi! Ask me any question about the material, and I\'ll help you understand it better.' }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -38,8 +38,8 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      
-      const systemPrompt = contextText 
+
+      const systemPrompt = contextText
         ? `You are a helpful tutor. The user is studying this material:\n\n${contextText}\n\nAnswer questions based on this material. Be clear and concise.`
         : 'You are a helpful tutor. Answer questions clearly and concisely.';
 
@@ -62,9 +62,9 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
       const data = await response.json();
       setMessages(prev => [...prev, { role: 'assistant', content: data.response }]);
     } catch (err) {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: '❌ Sorry, I could not process your request. Please try again.' 
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: '❌ Sorry, I could not process your request. Please try again.'
       }]);
     } finally {
       setLoading(false);
@@ -89,26 +89,26 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
       width: '30%',
       height: '100vh',
       background: 'white',
-      boxShadow: '-4px 0 20px rgba(0,0,0,0.15)',
+      boxShadow: '-4px 0 20px rgba(13, 110, 139, 0.15)',
       display: 'flex',
       flexDirection: 'column',
       zIndex: 1000,
-      borderLeft: '3px solid #ff9a56',
+      borderLeft: '3px solid #0d6e8b',
     }}>
       {/* Header */}
       <div style={{
         padding: '20px',
-        background: 'linear-gradient(135deg, #ff9a56 0%, #ff7a45 100%)',
+        background: 'linear-gradient(135deg, #0d6e8b 0%, #0a5a73 100%)',
         color: 'white',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
       }}>
-        <h3 style={{ margin: 0, color: 'white' }}>🤖 AI Tutor</h3>
-        <button 
+        <h3 style={{ margin: 0, color: 'white' }}>🤖 AI Assistant</h3>
+        <button
           onClick={onClose}
-          style={{ 
-            background: 'rgba(255,255,255,0.2)', 
+          style={{
+            background: 'rgba(255,255,255,0.2)',
             color: 'white',
             border: 'none',
             borderRadius: '50%',
@@ -131,10 +131,10 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
               marginBottom: '16px',
               padding: '12px 16px',
               borderRadius: '12px',
-              background: msg.role === 'user' 
-                ? 'linear-gradient(135deg, #ff9a56 0%, #ff7a45 100%)' 
-                : '#f8f9fa',
-              color: msg.role === 'user' ? 'white' : '#4a3728',
+              background: msg.role === 'user'
+                ? 'linear-gradient(135deg, #0d6e8b 0%, #0a5a73 100%)'
+                : '#f0f4f8',
+              color: msg.role === 'user' ? 'white' : '#1e3a5f',
               marginLeft: msg.role === 'user' ? 'auto' : '0',
               marginRight: msg.role === 'user' ? '0' : 'auto',
               maxWidth: '85%',
@@ -147,7 +147,7 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
           </div>
         ))}
         {loading && (
-          <div style={{ textAlign: 'center', color: '#8b6f47', padding: '12px' }}>
+          <div style={{ textAlign: 'center', color: '#4a6f8c', padding: '12px' }}>
             Thinking...
           </div>
         )}
@@ -155,17 +155,17 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
       </div>
 
       {/* Input */}
-      <div style={{ padding: '16px', borderTop: '1px solid #ffe4d6' }}>
+      <div style={{ padding: '16px', borderTop: '1px solid #d4e8f0' }}>
         {uploadedFile && (
-          <div style={{ 
-            marginBottom: '8px', 
-            padding: '8px', 
-            background: '#f0f0f0', 
+          <div style={{
+            marginBottom: '8px',
+            padding: '8px',
+            background: '#f0f4f8',
             borderRadius: '8px',
             fontSize: '12px',
           }}>
             📎 {uploadedFile.name}
-            <button 
+            <button
               onClick={() => setUploadedFile(null)}
               style={{ marginLeft: '8px', padding: '2px 6px', fontSize: '10px' }}
             >
@@ -179,9 +179,9 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask a question..."
+            placeholder="Ask a question about the material..."
             disabled={loading}
-            style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '2px solid #ffd4b8' }}
+            style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '2px solid #d4e8f0' }}
           />
           <button
             onClick={handleSend}

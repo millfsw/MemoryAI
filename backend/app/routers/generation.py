@@ -135,7 +135,7 @@ async def generate_content(
     session: Session = Depends(get_session)
 ):
     """Generate flashcards and/or summary from text using AI."""
-    
+
     try:
         # Extract user_id from token if available
         user_id = None
@@ -144,13 +144,27 @@ async def generate_content(
             payload = decode_access_token(token)
             if payload and "sub" in payload:
                 user_id = int(payload["sub"])
-        
+
         return await process_content(request.text, request.num_cards, request.mode, session, user_id)
-    
+
+    except ValueError as e:
+        # Handle AI configuration and parsing errors
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
     except Exception as e:
+        # Handle all other errors
+        error_detail = str(e)
+        # Check if it's an API error
+        if "AI API error" in error_detail or "AI_API_KEY" in error_detail:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error_detail
+            )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to generate content: {str(e)}"
+            detail=f"Failed to generate content: {error_detail}"
         )
 
 

@@ -29,7 +29,7 @@ function RegisterPage() {
 
     try {
       await register(username, password);
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {

@@ -2,6 +2,7 @@ from typing import List, Optional
 from openai import AsyncOpenAI
 from pydantic import BaseModel
 import json
+import openai
 
 from app.settings import settings
 
@@ -15,13 +16,25 @@ class FlashcardResponse(BaseModel):
     flashcards: List[FlashcardPair]
 
 
+def validate_api_key():
+    """Validate that API key is configured."""
+    if not settings.AI_API_KEY:
+        raise ValueError(
+            "AI_API_KEY is not configured. "
+            "Please set the AI_API_KEY environment variable in your .env file. "
+            "Get your API key from your AI provider (e.g., DashScope, OpenAI, etc.)."
+        )
+
+
 async def generate_topic(text: str) -> str:
     """Generate a short topic/title from text."""
+    validate_api_key()
+    
     client = AsyncOpenAI(
         api_key=settings.AI_API_KEY,
         base_url=settings.AI_API_BASE_URL,
     )
-    
+
     prompt = f"""Extract the main topic of this text in 3-5 words. Return ONLY the topic, nothing else.
 
 Text:
@@ -29,22 +42,25 @@ Text:
 
 Topic:"""
 
-    response = await client.chat.completions.create(
-        model=settings.AI_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": "You extract concise topic titles from text."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.3,
-        max_tokens=50,
-    )
-    
+    try:
+        response = await client.chat.completions.create(
+            model=settings.AI_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You extract concise topic titles from text."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.3,
+            max_tokens=50,
+        )
+    except openai.APIStatusError as e:
+        raise ValueError(f"AI API error ({e.status_code}): {e.message}. Please check your AI_API_KEY and try again.")
+
     return response.choices[0].message.content.strip()
 
 
@@ -53,11 +69,13 @@ async def generate_flashcards(text: str, num_cards: int = 10) -> List[FlashcardP
     Send text to AI and get flashcard pairs back.
     Uses OpenAI-compatible API.
     """
+    validate_api_key()
+    
     client = AsyncOpenAI(
         api_key=settings.AI_API_KEY,
         base_url=settings.AI_API_BASE_URL,
     )
-    
+
     prompt = f"""Convert the following text into {num_cards} flashcard question-answer pairs.
 Each question should test a key concept from the text, and the answer should be clear and concise.
 
@@ -74,21 +92,24 @@ Text to convert:
 
 Respond ONLY with valid JSON, no additional text."""
 
-    response = await client.chat.completions.create(
-        model=settings.AI_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are a helpful assistant that creates educational flashcards. You always respond with valid JSON."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.7,
-        max_tokens=2000,
-    )
+    try:
+        response = await client.chat.completions.create(
+            model=settings.AI_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant that creates educational flashcards. You always respond with valid JSON."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.7,
+            max_tokens=2000,
+        )
+    except openai.APIStatusError as e:
+        raise ValueError(f"AI API error ({e.status_code}): {e.message}. Please check your AI_API_KEY and try again.")
     
     try:
         # Parse the JSON response
@@ -110,11 +131,13 @@ async def generate_summary(text: str) -> str:
     Generate a concise summary from the text.
     Uses OpenAI-compatible API.
     """
+    validate_api_key()
+    
     client = AsyncOpenAI(
         api_key=settings.AI_API_KEY,
         base_url=settings.AI_API_BASE_URL,
     )
-    
+
     prompt = f"""Create a well-structured study summary of the following text.
 
 Requirements:
@@ -130,21 +153,24 @@ Text to summarize:
 
 Summary:"""
 
-    response = await client.chat.completions.create(
-        model=settings.AI_MODEL,
-        messages=[
-            {
-                "role": "system",
-                "content": "You are an expert tutor who creates clear, well-structured study summaries. You use **bold** to highlight important terms and concepts."
-            },
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ],
-        temperature=0.7,
-        max_tokens=1500,
-    )
+    try:
+        response = await client.chat.completions.create(
+            model=settings.AI_MODEL,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert tutor who creates clear, well-structured study summaries. You use **bold** to highlight important terms and concepts."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            temperature=0.7,
+            max_tokens=1500,
+        )
+    except openai.APIStatusError as e:
+        raise ValueError(f"AI API error ({e.status_code}): {e.message}. Please check your AI_API_KEY and try again.")
     
     return response.choices[0].message.content
 
@@ -190,6 +216,8 @@ async def generate_both(text: str, num_cards: int = 10) -> dict:
 
 async def chat_with_ai(message: str, context: str = "") -> str:
     """Chat with AI about the study material."""
+    validate_api_key()
+    
     client = AsyncOpenAI(
         api_key=settings.AI_API_KEY,
         base_url=settings.AI_API_BASE_URL,
@@ -206,11 +234,14 @@ async def chat_with_ai(message: str, context: str = "") -> str:
         }
     ]
     
-    response = await client.chat.completions.create(
-        model=settings.AI_MODEL,
-        messages=messages,
-        temperature=0.7,
-        max_tokens=1000,
-    )
+    try:
+        response = await client.chat.completions.create(
+            model=settings.AI_MODEL,
+            messages=messages,
+            temperature=0.7,
+            max_tokens=1000,
+        )
+    except openai.APIStatusError as e:
+        raise ValueError(f"AI API error ({e.status_code}): {e.message}. Please check your AI_API_KEY and try again.")
     
     return response.choices[0].message.content

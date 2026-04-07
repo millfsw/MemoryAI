@@ -25,8 +25,21 @@ async def chat(
     try:
         response = await chat_with_ai(request.message, request.context)
         return ChatResponse(response=response)
+    except ValueError as e:
+        # Handle AI configuration errors
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e)
+        )
     except Exception as e:
+        # Handle all other errors
+        error_detail = str(e)
+        if "AI API error" in error_detail or "AI_API_KEY" in error_detail:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=error_detail
+            )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get AI response: {str(e)}"
+            detail=f"Failed to get AI response: {error_detail}"
         )

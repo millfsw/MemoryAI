@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.settings import settings
 from app.database import create_db_and_tables
-from app.routers import auth, generation, decks, flashcards, chat
+from app.routers import auth, generation, decks, flashcards, chat, study
 
 
 @asynccontextmanager

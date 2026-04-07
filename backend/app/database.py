@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from app.settings import settings
 # Import models to register them with SQLModel
 from app.models import User, Deck, Flashcard  # noqa: F401
+from app.models import card_progress  # noqa: F401
 
 # Sync engine for migrations and CLI tools
 engine = create_engine(

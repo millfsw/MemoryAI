@@ -45,7 +45,7 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
   return (
     <div className="card">
       <h2>Generate Study Material</h2>
-      
+
       <div style={{ marginBottom: '16px' }}>
         <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
           Generation Mode:
@@ -76,7 +76,7 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
             disabled={loading}
             style={{ flex: 1 }}
           >
-            🎯 Both (Recommended)
+            🎯 Flashcards and Summary
           </button>
         </div>
       </div>
@@ -97,8 +97,8 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
           {uploadedFile && (
             <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
               ✅ File: {uploadedFile.name} ({(uploadedFile.size / 1024).toFixed(2)} KB)
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={clearFile}
                 style={{ marginLeft: '12px', padding: '4px 8px', fontSize: '12px' }}
               >
@@ -121,24 +121,26 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
           />
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <label htmlFor="num-cards" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-            Number of flashcards:
-          </label>
-          <input
-            type="number"
-            id="num-cards"
-            value={numCards}
-            onChange={(e) => setNumCards(Number(e.target.value))}
-            min={1}
-            max={50}
-            disabled={loading}
-            style={{ width: '100px' }}
-          />
-        </div>
+        {(mode === 'flashcards' || mode === 'both') && (
+          <div style={{ marginBottom: '16px' }}>
+            <label htmlFor="num-cards" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+              Number of flashcards:
+            </label>
+            <input
+              type="number"
+              id="num-cards"
+              value={numCards}
+              onChange={(e) => setNumCards(Number(e.target.value))}
+              min={1}
+              max={50}
+              disabled={loading}
+              style={{ width: '100px' }}
+            />
+          </div>
+        )}
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="btn-primary"
           disabled={loading || (!text.trim() && !uploadedFile)}
         >

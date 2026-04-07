@@ -17,7 +17,7 @@ function LoginPage() {
 
     try {
       await login(username, password);
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
     } finally {
