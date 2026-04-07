@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import FlashcardDisplay from '../components/FlashcardDisplay';
+import AIChatSidebar from '../components/AIChatSidebar';
 
 interface DeckDetail {
   id: number;
@@ -23,6 +24,7 @@ function DeckDetailPage() {
   const [deck, setDeck] = useState<DeckDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     fetchDeckDetail();
@@ -89,9 +91,12 @@ function DeckDetailPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto', width: '100%' }}>
           <div>
             <h1>📖 {deck.title}</h1>
-            <p>{deck.description}</p>
+            {deck.description && <p>{deck.description}</p>}
           </div>
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <button onClick={() => setChatOpen(true)} className="btn-peach" style={{ padding: '8px 16px' }}>
+              🤖 Ask AI
+            </button>
             <button onClick={() => navigate('/my-decks')} className="btn-secondary" style={{ padding: '8px 16px' }}>
               ← Back to Decks
             </button>
@@ -102,14 +107,7 @@ function DeckDetailPage() {
         </div>
       </header>
 
-      <main className="container">
-        <div className="deck-detail-header">
-          <p className="deck-detail-date">
-            📅 Created on {new Date(deck.created_at).toLocaleDateString()} at{' '}
-            {new Date(deck.created_at).toLocaleTimeString()}
-          </p>
-        </div>
-
+      <main className="container" style={{ maxWidth: chatOpen ? '70%' : '1200px', transition: 'max-width 0.3s ease' }}>
         {deck.summary && (
           <div className="card" style={{ marginBottom: '24px' }}>
             <h2>📝 Study Summary</h2>
@@ -123,6 +121,13 @@ function DeckDetailPage() {
           <FlashcardDisplay flashcards={deck.flashcards} />
         )}
       </main>
+
+      <AIChatSidebar 
+        isOpen={chatOpen} 
+        onClose={() => setChatOpen(false)} 
+        contextText={deck.summary || deck.description || ''}
+        token={token}
+      />
     </div>
   );
 }

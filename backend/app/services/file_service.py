@@ -1,6 +1,6 @@
 """
 File processing service for extracting text from various file formats.
-Supports: .txt, .pdf, .docx
+Supports: .txt, .pdf, .docx, .png, .jpg
 """
 
 import os
@@ -61,6 +61,19 @@ def extract_text_from_docx(file_content: bytes) -> str:
         raise ValueError(f"Failed to read DOCX file: {str(e)}")
 
 
+def extract_text_from_image(file_content: bytes) -> str:
+    """Extract text from image files (.png, .jpg) using OCR."""
+    try:
+        from PIL import Image
+        import pytesseract
+        
+        image = Image.open(BytesIO(file_content))
+        text = pytesseract.image_to_string(image, lang='eng+rus')  # Support English and Russian
+        return text.strip()
+    except Exception as e:
+        raise ValueError(f"Failed to read image file: {str(e)}")
+
+
 def extract_text(file_content: bytes, filename: str) -> str:
     """
     Extract text from file based on extension.
@@ -82,8 +95,10 @@ def extract_text(file_content: bytes, filename: str) -> str:
         if ext == '.doc':
             raise ValueError("Old .doc format not supported. Please convert to .docx")
         return extract_text_from_docx(file_content)
+    elif ext in ['.png', '.jpg', '.jpeg']:
+        return extract_text_from_image(file_content)
     else:
-        raise ValueError(f"Unsupported file type: {ext}. Supported: .txt, .pdf, .docx")
+        raise ValueError(f"Unsupported file type: {ext}. Supported: .txt, .pdf, .docx, .png, .jpg")
 
 
 def validate_file(filename: str, max_size_mb: int = 10) -> None:
@@ -95,7 +110,7 @@ def validate_file(filename: str, max_size_mb: int = 10) -> None:
         max_size_mb: Maximum file size in MB
     """
     ext = Path(filename).suffix.lower()
-    allowed_extensions = {'.txt', '.pdf', '.docx'}
+    allowed_extensions = {'.txt', '.pdf', '.docx', '.png', '.jpg', '.jpeg'}
     
     if ext not in allowed_extensions:
         raise ValueError(f"File type {ext} not allowed. Allowed: {', '.join(allowed_extensions)}")

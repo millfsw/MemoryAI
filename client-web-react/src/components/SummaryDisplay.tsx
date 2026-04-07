@@ -5,21 +5,15 @@ interface SummaryDisplayProps {
 }
 
 function cleanSummaryText(text: string): string {
-  // Remove markdown symbols
+  // Remove hashtags and bullet markers but KEEP bold markers (**)
   return text
-    // Remove hashtags
+    // Remove hashtags (# followed by space)
     .replace(/#{1,6}\s*/g, '')
-    // Remove bold/italic markers
-    .replace(/\*\*/g, '')
-    .replace(/\*/g, '')
-    .replace(/__/g, '')
-    .replace(/_/g, '')
+    // Remove italic markers (*single* or _single_)
+    .replace(/(?<!\*)\*(?!\*)(?!\s)(.*?)(?<!\s)\*(?!\*)/g, '$1')
+    .replace(/_(?!\s)(.*?)(?<!\s)_/g, '$1')
     // Remove bullet point markers
     .replace(/^[-*+]\s+/gm, '• ')
-    // Remove extra asterisks
-    .replace(/\*{2,}/g, '')
-    // Clean up multiple newlines
-    .replace(/\n{3,}/g, '\n\n')
     // Remove leading/trailing whitespace
     .trim();
 }
@@ -30,9 +24,13 @@ function SummaryDisplay({ summary }: SummaryDisplayProps) {
   return (
     <div className="card" style={{ marginTop: '20px' }}>
       <h2>📝 Study Summary</h2>
-      <div className="summary-content">
-        {cleanedSummary}
-      </div>
+      <div className="summary-content" dangerouslySetInnerHTML={{ 
+        __html: cleanedSummary
+          // Convert **bold** to <strong>
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          // Convert newlines to <br>
+          .replace(/\n/g, '<br>')
+      }} />
     </div>
   );
 }

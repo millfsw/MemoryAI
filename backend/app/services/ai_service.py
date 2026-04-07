@@ -15,6 +15,39 @@ class FlashcardResponse(BaseModel):
     flashcards: List[FlashcardPair]
 
 
+async def generate_topic(text: str) -> str:
+    """Generate a short topic/title from text."""
+    client = AsyncOpenAI(
+        api_key=settings.AI_API_KEY,
+        base_url=settings.AI_API_BASE_URL,
+    )
+    
+    prompt = f"""Extract the main topic of this text in 3-5 words. Return ONLY the topic, nothing else.
+
+Text:
+{text[:500]}
+
+Topic:"""
+
+    response = await client.chat.completions.create(
+        model=settings.AI_MODEL,
+        messages=[
+            {
+                "role": "system",
+                "content": "You extract concise topic titles from text."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.3,
+        max_tokens=50,
+    )
+    
+    return response.choices[0].message.content.strip()
+
+
 async def generate_flashcards(text: str, num_cards: int = 10) -> List[FlashcardPair]:
     """
     Send text to AI and get flashcard pairs back.
@@ -90,6 +123,7 @@ Requirements:
 - Keep it concise but comprehensive
 - Focus on information that would be important for exams or understanding
 - Format with clear headings and structure
+- Use **bold** to highlight important terms and concepts
 
 Text to summarize:
 {text}
@@ -101,7 +135,7 @@ Summary:"""
         messages=[
             {
                 "role": "system",
-                "content": "You are an expert tutor who creates clear, well-structured study summaries. You focus on key concepts and present them in an organized way that helps students understand and remember the material."
+                "content": "You are an expert tutor who creates clear, well-structured study summaries. You use **bold** to highlight important terms and concepts."
             },
             {
                 "role": "user",
@@ -122,13 +156,15 @@ async def generate_both(text: str, num_cards: int = 10) -> dict:
     """
     import asyncio
     
-    # Run both generations in parallel for faster response
+    # Run all three generations in parallel
     flashcards_task = generate_flashcards(text, num_cards)
     summary_task = generate_summary(text)
+    topic_task = generate_topic(text)
     
-    flashcards, summary = await asyncio.gather(
+    flashcards, summary, topic = await asyncio.gather(
         flashcards_task, 
         summary_task,
+        topic_task,
         return_exceptions=True
     )
     
@@ -144,4 +180,37 @@ async def generate_both(text: str, num_cards: int = 10) -> dict:
     else:
         result['summary'] = summary
     
+    if isinstance(topic, Exception):
+        result['topic'] = 'Generated Deck'
+    else:
+        result['topic'] = topic
+    
     return result
+
+
+async def chat_with_ai(message: str, context: str = "") -> str:
+    """Chat with AI about the study material."""
+    client = AsyncOpenAI(
+        api_key=settings.AI_API_KEY,
+        base_url=settings.AI_API_BASE_URL,
+    )
+    
+    messages = [
+        {
+            "role": "system",
+            "content": f"You are a helpful AI tutor. Help the user understand the material. {'The context material is: ' + context if context else ''} Answer questions clearly and provide examples when helpful."
+        },
+        {
+            "role": "user",
+            "content": message
+        }
+    ]
+    
+    response = await client.chat.completions.create(
+        model=settings.AI_MODEL,
+        messages=messages,
+        temperature=0.7,
+        max_tokens=1000,
+    )
+    
+    return response.choices[0].message.content

@@ -26,10 +26,14 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
     const file = e.target.files?.[0];
     if (file) {
       setUploadedFile(file);
-      // Read file content and display in textarea
-      file.text().then(content => {
-        setText(content);
-      });
+      // Read file content and display in textarea (for text files only)
+      if (file.type.startsWith('text/') || file.name.endsWith('.txt')) {
+        file.text().then(content => {
+          setText(content);
+        });
+      } else {
+        setText(''); // Clear text for images/PDFs
+      }
     }
   };
 
@@ -80,12 +84,12 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '16px' }}>
           <label htmlFor="file-upload" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-            Upload File (.txt, .pdf, .docx):
+            Upload File (.txt, .pdf, .docx, .png, .jpg):
           </label>
           <input
             type="file"
             id="file-upload"
-            accept=".txt,.pdf,.docx,.md,.text"
+            accept=".txt,.pdf,.docx,.png,.jpg,.jpeg,.md,.text"
             onChange={handleFileChange}
             disabled={loading}
             style={{ padding: '8px' }}
@@ -113,7 +117,6 @@ function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange 
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Paste your lecture notes, textbook material, or any study content here..."
-            required
             disabled={loading}
           />
         </div>

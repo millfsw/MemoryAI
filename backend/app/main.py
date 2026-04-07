@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.settings import settings
 from app.database import create_db_and_tables
-from app.routers import auth, generation, decks, flashcards
+from app.routers import auth, generation, decks, flashcards, chat
 
 
 @asynccontextmanager
@@ -37,6 +37,7 @@ app.include_router(auth.router)
 app.include_router(generation.router)
 app.include_router(decks.router)
 app.include_router(flashcards.router)
+app.include_router(chat.router)
 
 
 @app.get("/health")

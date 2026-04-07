@@ -95,7 +95,7 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
         # Create a deck for flashcards
         flashcard_pairs = result['flashcards']
         deck = Deck(
-            title="Generated Deck",
+            title=result.get('topic', 'Generated Deck'),  # Use AI-generated topic as title
             description=f"Generated from text ({len(flashcard_pairs)} cards + summary)",
             user_id=user_id,
             summary=result['summary'],  # Save summary to database
