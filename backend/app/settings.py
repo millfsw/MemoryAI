@@ -16,10 +16,10 @@ class Settings(BaseSettings):
     DB_USER: str = "memoryai"
     DB_PASSWORD: str = "memoryai_password"
     
-    # AI Settings
+    # AI Settings - Default: Qwen
     AI_API_KEY: str = ""
-    AI_API_BASE_URL: str = "https://api.openai.com/v1"
-    AI_MODEL: str = "gpt-3.5-turbo"
+    AI_API_BASE_URL: str = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    AI_MODEL: str = "qwen3-coder-plus"
     
     # JWT Authentication
     SECRET_KEY: str = "your-secret-key-change-in-production"
