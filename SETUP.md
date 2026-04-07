@@ -1,49 +1,49 @@
 # MemoryAI - Quick Setup Guide
 
-## 🚀 Настройка Qwen API (Рекомендуется)
+## 🚀 Qwen API Setup (Recommended)
 
-### Шаг 1: Получи API ключ
+### Step 1: Get Your API Key
 
-1. Зайди на https://dashscope.console.aliyun.com/
-2. Зарегистрируйся (если ещё не зарегистрирован)
-3. Перейди в раздел **API Keys**
-4. Создай новый ключ
-5. Скопируй ключ
+1. Go to https://dashscope.console.aliyun.com/
+2. Sign up (if you haven't already)
+3. Navigate to the **API Keys** section
+4. Create a new key
+5. Copy the key
 
-### Шаг 2: Обнови .env файл
+### Step 2: Update Your .env File
 
-Открой файл `.env` и измени:
+Open the `.env` file and update:
 
 ```env
-AI_API_KEY=тво_скопированный_ключ_сюда
+AI_API_KEY=your_copied_key_here
 AI_API_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
 AI_MODEL=qwen3-coder-plus
 ```
 
-### Шаг 3: Перезапусти backend
+### Step 3: Restart the Backend
 
-```powershell
+```bash
 docker-compose restart backend
 ```
 
 ---
 
-## 🎯 Доступные модели Qwen
+## 🎯 Available Qwen Models
 
-| Модель | Описание | Рекомендуемая |
-|--------|----------|---------------|
-| `qwen3-coder-plus` | Умная, хорошо работает с текстом | ✅ По умолчанию |
-| `qwen3-coder-next` | Новейшая версия | |
-| `qwen3-max` | Максимальное качество | |
-| `qwen3.5-plus` | Баланс скорости/качества | |
+| Model | Description | Recommended |
+|--------|-------------|-------------|
+| `qwen3-coder-plus` | Smart, works well with text | ✅ Default |
+| `qwen3-coder-next` | Latest version | |
+| `qwen3-max` | Maximum quality | |
+| `qwen3.5-plus` | Balance of speed/quality | |
 
-Для изменения модели просто поменяй `AI_MODEL` в `.env`.
+To change the model, simply update `AI_MODEL` in your `.env` file.
 
 ---
 
-## 🔧 Альтернативные AI провайдеры
+## 🔧 Alternative AI Providers
 
-Если хочешь использовать другой сервис, обнови `.env`:
+If you want to use a different service, update your `.env`:
 
 ### OpenAI
 ```env
@@ -52,14 +52,14 @@ AI_API_BASE_URL=https://api.openai.com/v1
 AI_MODEL=gpt-3.5-turbo
 ```
 
-### Groq (бесплатный тир)
+### Groq (Free Tier Available)
 ```env
 AI_API_KEY=gsk_xxx
 AI_API_BASE_URL=https://api.groq.com/openai/v1
 AI_MODEL=llama-3.1-70b-versatile
 ```
 
-### GigaChat (для России)
+### GigaChat
 ```env
 AI_API_KEY=xxx
 AI_API_BASE_URL=https://gigachat.devices.sberbank.ru/api/v1
@@ -68,37 +68,37 @@ AI_MODEL=GigaChat
 
 ---
 
-## ⚡ Быстрый старт
+## ⚡ Quick Start
 
-После настройки API ключа:
+After setting up your API key:
 
-1. Запусти Docker:
-   ```powershell
+1. Start Docker:
+   ```bash
    docker-compose up -d
    ```
 
-2. Открой: http://localhost:5173
+2. Open: http://localhost:5173
 
-3. Загрузи файл (.txt, .pdf, .docx) или вставь текст
+3. Upload a file (.txt, .pdf, .docx) or paste text
 
-4. Нажми Generate!
+4. Click Generate!
 
 ---
 
 ## ❓ Troubleshooting
 
-### Ошибка "Failed to fetch"
-- Убедись, что Docker запущен
-- Проверь статус: `docker-compose ps`
-- Backend должен быть в статусе `healthy`
+### "Failed to fetch" Error
+- Make sure Docker is running
+- Check status: `docker-compose ps`
+- Backend should be in `healthy` status
 
-### Ошибка API ключа
-- Проверь, что ключ правильный
-- Убедись, что на счету есть кредиты
-- Посмотри логи: `docker-compose logs backend`
+### API Key Error
+- Verify your key is correct
+- Make sure you have credits on your account
+- Check logs: `docker-compose logs backend`
 
-### Контейнеры не запускаются
-```powershell
+### Containers Won't Start
+```bash
 docker-compose down
 docker-compose up -d --build
 ```
