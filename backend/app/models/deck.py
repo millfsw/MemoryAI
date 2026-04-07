@@ -18,7 +18,8 @@ class Deck(DeckBase, table=True):
     __tablename__ = "decks"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    user_id: Optional[int] = Field(default=None, foreign_key="users.id", index=True)  # Made optional for MVP
+    user_id: Optional[int] = Field(default=None, foreign_key="users.id", index=True)
+    summary: Optional[str] = Field(default=None)  # Store generated summary
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
     # Relationships

@@ -68,7 +68,7 @@ async def get_deck(deck_id: int, session: Session = Depends(get_session)):
 
 @router.get("/{deck_id}/detail", response_model=DeckDetailResponse)
 async def get_deck_detail(deck_id: int, session: Session = Depends(get_session)):
-    """Get a deck with all its flashcards."""
+    """Get a deck with all its flashcards and summary."""
     deck = session.get(Deck, deck_id)
     if not deck:
         raise HTTPException(
@@ -87,7 +87,7 @@ async def get_deck_detail(deck_id: int, session: Session = Depends(get_session))
         user_id=deck.user_id,
         created_at=deck.created_at.isoformat(),
         flashcards=[FlashcardResponse.model_validate(fc) for fc in flashcards],
-        summary=None  # Summary is not stored in DB (MVP limitation)
+        summary=deck.summary  # Return the stored summary
     )
 
 

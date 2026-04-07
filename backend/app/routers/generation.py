@@ -98,6 +98,7 @@ async def process_content(text: str, num_cards: int, mode: str, session: Session
             title="Generated Deck",
             description=f"Generated from text ({len(flashcard_pairs)} cards + summary)",
             user_id=user_id,
+            summary=result['summary'],  # Save summary to database
         )
         
         session.add(deck)
