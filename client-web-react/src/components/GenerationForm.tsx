@@ -1,28 +1,112 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, ChangeEvent } from 'react';
 
 interface GenerationFormProps {
   onGenerate: (text: string, numCards: number) => void;
+  onFileUpload: (file: File, numCards: number) => void;
   loading: boolean;
+  mode: 'flashcards' | 'summary' | 'both';
+  onModeChange: (mode: 'flashcards' | 'summary' | 'both') => void;
 }
 
-function GenerationForm({ onGenerate, loading }: GenerationFormProps) {
+function GenerationForm({ onGenerate, onFileUpload, loading, mode, onModeChange }: GenerationFormProps) {
   const [text, setText] = useState('');
   const [numCards, setNumCards] = useState(10);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (text.trim()) {
+    if (uploadedFile) {
+      onFileUpload(uploadedFile, numCards);
+    } else if (text.trim()) {
       onGenerate(text, numCards);
     }
   };
 
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+      // Read file content and display in textarea
+      file.text().then(content => {
+        setText(content);
+      });
+    }
+  };
+
+  const clearFile = () => {
+    setUploadedFile(null);
+    setText('');
+  };
+
   return (
     <div className="card">
-      <h2>Generate Flashcards</h2>
+      <h2>Generate Study Material</h2>
+      
+      <div style={{ marginBottom: '16px' }}>
+        <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+          Generation Mode:
+        </label>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            type="button"
+            className={mode === 'flashcards' ? 'btn-primary' : 'btn-secondary'}
+            onClick={() => onModeChange('flashcards')}
+            disabled={loading}
+            style={{ flex: 1 }}
+          >
+            🎴 Flashcards Only
+          </button>
+          <button
+            type="button"
+            className={mode === 'summary' ? 'btn-primary' : 'btn-secondary'}
+            onClick={() => onModeChange('summary')}
+            disabled={loading}
+            style={{ flex: 1 }}
+          >
+            📝 Summary Only
+          </button>
+          <button
+            type="button"
+            className={mode === 'both' ? 'btn-primary' : 'btn-secondary'}
+            onClick={() => onModeChange('both')}
+            disabled={loading}
+            style={{ flex: 1 }}
+          >
+            🎯 Both (Recommended)
+          </button>
+        </div>
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '16px' }}>
+          <label htmlFor="file-upload" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
+            Upload File (.txt):
+          </label>
+          <input
+            type="file"
+            id="file-upload"
+            accept=".txt,.md,.text"
+            onChange={handleFileChange}
+            disabled={loading}
+            style={{ padding: '8px' }}
+          />
+          {uploadedFile && (
+            <div style={{ marginTop: '8px', padding: '8px', backgroundColor: '#f0f0f0', borderRadius: '4px' }}>
+              ✅ File: {uploadedFile.name}
+              <button 
+                type="button" 
+                onClick={clearFile}
+                style={{ marginLeft: '12px', padding: '4px 8px', fontSize: '12px' }}
+              >
+                Clear
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div style={{ marginBottom: '16px' }}>
           <label htmlFor="text-input" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-            Enter your study material:
+            Or paste your text:
           </label>
           <textarea
             id="text-input"
@@ -53,9 +137,9 @@ function GenerationForm({ onGenerate, loading }: GenerationFormProps) {
         <button 
           type="submit" 
           className="btn-primary"
-          disabled={loading || !text.trim()}
+          disabled={loading || (!text.trim() && !uploadedFile)}
         >
-          {loading ? 'Generating...' : '✨ Generate Flashcards'}
+          {loading ? 'Generating...' : mode === 'both' ? '✨ Generate Summary & Flashcards' : mode === 'summary' ? '📝 Generate Summary' : '✨ Generate Flashcards'}
         </button>
       </form>
     </div>
