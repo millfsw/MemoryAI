@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { apiPath } from '../config/api';
 
 interface User {
   id: number;
@@ -37,7 +38,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Load user and token from localStorage on mount
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
+
     if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
@@ -45,9 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async (username: string, password: string) => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-    
-    const response = await fetch(`${apiUrl}/auth/login`, {
+    const response = await fetch(apiPath('/auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
@@ -61,15 +60,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const data = await response.json();
     setToken(data.access_token);
     setUser(data.user);
-    
+
     localStorage.setItem('token', data.access_token);
     localStorage.setItem('user', JSON.stringify(data.user));
   };
 
   const register = async (username: string, password: string) => {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-    
-    const response = await fetch(`${apiUrl}/auth/register`, {
+    const response = await fetch(apiPath('/auth/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
