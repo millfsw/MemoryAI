@@ -15,3 +15,14 @@ export function apiPath(path: string): string {
 export function getApiUrl(): string {
   return API_BASE_URL;
 }
+
+/**
+ * Returns the base URL for fetch calls.
+ * If using relative path, ensures it ends with /api/
+ */
+export function getFetchBaseUrl(): string {
+  if (API_BASE_URL === '/api') {
+    return '/api';
+  }
+  return API_BASE_URL;
+}

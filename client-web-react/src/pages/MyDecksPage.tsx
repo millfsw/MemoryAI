@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import HeaderBar from '../components/HeaderBar';
+import { apiPath } from '../config/api';
 
 interface Deck {
   id: number;
@@ -35,9 +36,7 @@ function MyDecksPage() {
 
   const fetchDecks = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-      const response = await fetch(`${apiUrl}/decks`, {
+      const response = await fetch(apiPath('/decks'), {
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
       });
 
@@ -81,10 +80,8 @@ function MyDecksPage() {
     setDeleting(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
       const deletePromises = Array.from(selectedDecks).map(async (deckId) => {
-        return fetch(`${apiUrl}/decks/${deckId}`, {
+        return fetch(apiPath(`/decks/${deckId}`), {
           method: 'DELETE',
           headers: token ? { 'Authorization': `Bearer ${token}` } : {},
         });

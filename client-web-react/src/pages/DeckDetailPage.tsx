@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiPath } from '../config/api';
 import FlashcardDisplay from '../components/FlashcardDisplay';
 import AIChatSidebar from '../components/AIChatSidebar';
 import SummaryDisplay from '../components/SummaryDisplay';
@@ -68,9 +69,7 @@ function DeckDetailPage() {
 
   const fetchDeckDetail = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-      const response = await fetch(`${apiUrl}/decks/${id}/detail`, {
+      const response = await fetch(apiPath(`/decks/${id}/detail`), {
         headers: token ? { 'Authorization': `Bearer ${token}` } : {},
       });
 
