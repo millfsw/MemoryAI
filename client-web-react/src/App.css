@@ -900,3 +900,322 @@
   width: 100%;
 }
 
+/* ===== MOBILE RESPONSIVENESS ===== */
+
+/* Tablet (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Landing page */
+  .landing-title {
+    font-size: 40px;
+  }
+
+  .landing-subtitle {
+    font-size: 18px;
+  }
+
+  .landing-hero {
+    padding: 50px 20px;
+  }
+
+  .section-title {
+    font-size: 28px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .how-steps {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  /* Header */
+  .header-content {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .header-right {
+    flex-wrap: wrap;
+  }
+
+  .header-username {
+    width: 100%;
+    order: -1;
+    font-size: 12px;
+  }
+
+  /* Chat */
+  .chat-container {
+    min-height: 500px;
+  }
+
+  .chat-message {
+    max-width: 90%;
+  }
+
+  /* AI Chat Sidebar */
+  .ai-chat-sidebar {
+    width: 100% !important;
+  }
+
+  /* Study/Quiz */
+  .study-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn-study {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .study-mode-toggle {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .study-mode-toggle button {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  /* Settings */
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* Mobile (max-width: 480px) */
+@media (max-width: 480px) {
+  /* Global */
+  .container {
+    padding: 12px !important;
+  }
+
+  /* Nav */
+  .top-nav {
+    padding: 10px 12px;
+  }
+
+  .nav-buttons {
+    gap: 8px;
+  }
+
+  .btn-nav {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  /* Landing page */
+  .landing-title {
+    font-size: 32px;
+  }
+
+  .landing-subtitle {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .landing-hero {
+    padding: 40px 16px;
+  }
+
+  .landing-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-landing-primary,
+  .btn-landing-secondary {
+    padding: 14px 24px;
+    font-size: 16px;
+    width: 100%;
+  }
+
+  .landing-features {
+    padding: 40px 16px;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .feature-card {
+    padding: 20px;
+  }
+
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .landing-how {
+    padding: 40px 16px;
+  }
+
+  .how-steps {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .step-number {
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
+
+  .landing-final-cta {
+    padding: 40px 16px;
+  }
+
+  .landing-final-cta h2 {
+    font-size: 24px;
+  }
+
+  .landing-final-cta p {
+    font-size: 16px;
+  }
+
+  /* Header */
+  .app-header {
+    padding: 12px 16px;
+  }
+
+  .header-title {
+    font-size: 18px;
+  }
+
+  .header-subtitle {
+    font-size: 12px;
+  }
+
+  .header-right {
+    gap: 6px;
+  }
+
+  .btn-header {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .header-username {
+    display: none;
+  }
+
+  /* Cards */
+  .card {
+    padding: 16px !important;
+  }
+
+  /* Forms */
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  /* Decks grid */
+  .decks-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Toolbar */
+  .decks-toolbar {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  /* Search */
+  .search-input {
+    font-size: 14px;
+    padding: 12px 16px;
+  }
+
+  /* Chat */
+  .chat-messages {
+    padding: 16px;
+  }
+
+  .chat-message {
+    max-width: 95%;
+  }
+
+  .message-bubble {
+    padding: 10px 14px;
+  }
+
+  .chat-input-form {
+    padding: 12px;
+  }
+
+  .chat-input {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  /* Study mode */
+  .study-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .study-stats {
+    gap: 12px;
+  }
+
+  .stat-known,
+  .stat-unknown {
+    font-size: 14px;
+  }
+
+  .study-nav {
+    flex-direction: column;
+  }
+
+  .study-nav button {
+    width: 100%;
+  }
+
+  /* Quiz */
+  .quiz-question h4 {
+    font-size: 18px;
+  }
+
+  .quiz-option {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .option-letter {
+    width: 28px;
+    height: 28px;
+    font-size: 13px;
+  }
+
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-width: 4px;
+  }
+
+  .score-number {
+    font-size: 32px;
+  }
+
+  /* Settings */
+  .settings-section h3 {
+    font-size: 16px;
+  }
+
+  /* AI Chat Sidebar mobile */
+  .ai-chat-sidebar {
+    width: 100% !important;
+    right: 0 !important;
+  }
+}
+
