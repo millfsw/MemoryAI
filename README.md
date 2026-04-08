@@ -23,7 +23,7 @@ AI-powered generation: instantly converts raw text into structured study cards u
 ### Screenshots
 
 **Login Page:**
-![Login Page](https://via.placeholder.com/800x450/0d6e8b/ffffff?text=Login+Page)
+![Login Page](hhtps://github.com/millfsw/se-toolkit-hackathon/raw/main/images/log_in.jpeg)
 
 **Generate Flashcards:**
 ![Generate Flashcards](https://via.placeholder.com/800x450/2d936c/ffffff?text=Generate+Flashcards)
