@@ -19,6 +19,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .nav-logo {
@@ -986,6 +988,17 @@
     align-items: flex-start;
     gap: 4px;
   }
+
+  /* Nav - fix overflow */
+  .nav-content {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-nav {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
 }
 
 /* Mobile (max-width: 480px) */
@@ -1000,13 +1013,23 @@
     padding: 10px 12px;
   }
 
+  .nav-content {
+    justify-content: center;
+    text-align: center;
+  }
+
   .nav-buttons {
-    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
   }
 
   .btn-nav {
     padding: 6px 14px;
     font-size: 13px;
+    flex: 1 1 auto;
+    min-width: 100px;
   }
 
   /* Landing page */
