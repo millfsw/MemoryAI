@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiPath } from '../config/api';
 import HeaderBar from '../components/HeaderBar';
 
 function SettingsPage() {
@@ -31,9 +32,7 @@ function SettingsPage() {
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-      const response = await fetch(`${apiUrl}/auth/change-password`, {
+      const response = await fetch(apiPath('/auth/change-password'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

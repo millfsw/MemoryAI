@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { apiPath } from '../config/api';
 import GenerationForm from '../components/GenerationForm';
 import FlashcardDisplay from '../components/FlashcardDisplay';
 import SummaryDisplay from '../components/SummaryDisplay';
@@ -29,19 +30,17 @@ function HomePage() {
     setFlashcards([]);
     setSummary('');
     setGeneratedDeckId(null);
-    
+
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       };
-      
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      
-      const response = await fetch(`${apiUrl}/generate`, {
+
+      const response = await fetch(apiPath('/generate'), {
         method: 'POST',
         headers,
         body: JSON.stringify({
@@ -57,7 +56,7 @@ function HomePage() {
       }
 
       const data = await response.json();
-      
+
       if (data.flashcards) {
         setFlashcards(data.flashcards);
       }
@@ -81,21 +80,20 @@ function HomePage() {
     setFlashcards([]);
     setSummary('');
     setGeneratedDeckId(null);
-    
+
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
       const formData = new FormData();
       formData.append('file', file);
       formData.append('num_cards', numCards.toString());
       formData.append('mode', generationMode);
-      
+
       const headers: Record<string, string> = {};
-      
+
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      
-      const response = await fetch(`${apiUrl}/generate/upload`, {
+
+      const response = await fetch(apiPath('/generate/upload'), {
         method: 'POST',
         headers,
         body: formData,
@@ -107,7 +105,7 @@ function HomePage() {
       }
 
       const data = await response.json();
-      
+
       if (data.flashcards) {
         setFlashcards(data.flashcards);
       }

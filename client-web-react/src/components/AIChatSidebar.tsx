@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { apiPath } from '../config/api';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -37,13 +38,11 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
     setLoading(true);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
       const systemPrompt = contextText
         ? `You are a helpful tutor. The user is studying this material:\n\n${contextText}\n\nAnswer questions based on this material. Be clear and concise.`
         : 'You are a helpful tutor. Answer questions clearly and concisely.';
 
-      const response = await fetch(`${apiUrl}/chat`, {
+      const response = await fetch(apiPath('/chat'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

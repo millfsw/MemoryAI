@@ -90,10 +90,9 @@ function DeckDetailPage() {
     if (!deck || !token || !deck.flashcards[currentCardIndex]) return;
 
     const flashcardId = deck.flashcards[currentCardIndex].id;
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
     try {
-      await fetch(`${apiUrl}/study/review/${flashcardId}`, {
+      await fetch(apiPath(`/study/review/${flashcardId}`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -180,10 +179,9 @@ function DeckDetailPage() {
     // Record review
     if (deck && token) {
       const flashcardId = quizQuestions[currentQuizIndex].flashcard.id;
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
       
       try {
-        await fetch(`${apiUrl}/study/review/${flashcardId}`, {
+        await fetch(apiPath(`/study/review/${flashcardId}`), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
