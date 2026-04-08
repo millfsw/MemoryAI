@@ -16,10 +16,44 @@ An AI-powered flashcard generator that converts lecture notes and study material
 ### Core feature
 AI-powered generation: instantly converts raw text into structured study cards using an LLM API.
 
-### Main Features
-1. **AI-Powered Generation**: Converts raw text into structured study cards using an LLM API.
-2. **Interactive Study Mode**: A "flip-card" interface where users see a question, recall the answer, and click to reveal it.
-3. **Personal Library**: A database-backed storage system that allows users to save, view, and revisit their generated card decks later.
+---
+
+## Demo
+
+### Screenshots
+
+**Login Page:**
+![Login Page](https://via.placeholder.com/800x450/0d6e8b/ffffff?text=Login+Page)
+
+**Generate Flashcards:**
+![Generate Flashcards](https://via.placeholder.com/800x450/2d936c/ffffff?text=Generate+Flashcards)
+
+**Study Mode:**
+![Study Mode](https://via.placeholder.com/800x450/0a5a73/ffffff?text=Study+Mode)
+
+> Replace the placeholder images above with actual screenshots of the deployed application.
+
+---
+
+## Features
+
+### Implemented (Version 2)
+- **AI-Powered Generation**: Converts raw text into structured study cards using LLM API (OpenRouter)
+- **File Upload**: Upload PDF, DOCX, TXT files for flashcard generation
+- **Interactive Study Mode**: Flip-card interface with "Known / Don't Know" progress tracking
+- **Quiz Mode**: Multiple-choice questions generated from flashcards
+- **AI Chat Sidebar**: Ask contextual questions about your study material with markdown-formatted responses
+- **Authentication**: Registration, login, JWT-based sessions, password change
+- **Personal Library**: Save, view, search, and delete generated card decks
+- **Markdown AI Responses**: Formatted, readable AI responses (bold, lists, code blocks)
+- **Docker Deployment**: Fully containerized with nginx reverse proxy
+
+### Not Yet Implemented
+- Manual editing of individual flashcard text
+- Sharing decks with other users
+- Spaced repetition algorithm (SM-2) for optimal review scheduling
+- Mobile-responsive design improvements
+- Multiple LLM provider support (fallback if one is down)
 
 ---
 
@@ -83,11 +117,11 @@ A functioning product that takes raw text, processes it through AI, stores resul
 
 | Component | Technology |
 |-----------|-----------|
-| Backend | FastAPI (Python) or Express (Node.js) |
-| Database | PostgreSQL / SQLite |
-| Frontend | React + Bootstrap / Vanilla HTML/CSS/JS |
-| AI | OpenAI API / GigaChat API |
-| Deployment | Docker + University VM |
+| Backend | FastAPI (Python 3.11) |
+| Database | PostgreSQL 15 |
+| Frontend | React + TypeScript + Vite |
+| AI | OpenRouter API (meta-llama/llama-3.1-70b-instruct) |
+| Deployment | Docker Compose + nginx on Ubuntu 24.04 VM |
 
 ---
 
@@ -241,18 +275,89 @@ docker-compose down
 
 ---
 
+## Deployment on VM
+
+### Target Environment
+- **OS**: Ubuntu 24.04 LTS (or compatible Linux distribution)
+- **Architecture**: x86_64
+
+### What Should Be Installed on VM
+- **Docker** (latest stable)
+- **Docker Compose** (V2 plugin — `docker compose` command)
+- **Git** (for pulling the repository)
+
+Install Docker on Ubuntu:
+```bash
+# Install prerequisites
+sudo apt update
+sudo apt install -y ca-certificates curl git
+
+# Install Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# Add current user to docker group
+sudo usermod -aG docker $USER
+# Log out and log back in for group changes to take effect
+```
+
+Docker Compose V2 is included with modern Docker installations.
+
+### Step-by-Step Deployment Instructions
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/millfsw/se-toolkit-hackathon.git ~/MemoryAI
+   cd ~/MemoryAI
+   ```
+
+2. **Configure environment variables:**
+   ```bash
+   cp .env.example .env
+   nano .env  # Edit AI_API_KEY and other settings
+   ```
+
+3. **Start all services:**
+   ```bash
+   docker compose up -d --build
+   ```
+
+4. **Verify services are running:**
+   ```bash
+   docker compose ps
+   docker compose logs -f
+   ```
+
+5. **Access the application:**
+   - Frontend: `http://<VM_IP>:5173`
+   - Backend API: `http://<VM_IP>:8000`
+   - Health check: `http://<VM_IP>:8000/health`
+
+6. **To update the application:**
+   ```bash
+   cd ~/MemoryAI
+   git pull
+   docker compose down
+   docker compose up -d --build frontend
+   ```
+
+---
+
 ## API Endpoints
 
 ### Authentication
 - `POST /auth/register` - Register a new user
 - `POST /auth/login` - Login and get JWT token
+- `POST /auth/change-password` - Change user password
 
 ### Generation
 - `POST /generate` - Generate flashcards from text
+- `POST /generate/upload` - Generate flashcards from uploaded file
 
 ### Decks
 - `GET /decks` - Get all decks
 - `GET /decks/{deck_id}` - Get specific deck
+- `GET /decks/{deck_id}/detail` - Get deck with flashcards
 - `DELETE /decks/{deck_id}` - Delete a deck
 
 ### Flashcards
@@ -260,6 +365,12 @@ docker-compose down
 - `GET /flashcards/{flashcard_id}` - Get specific flashcard
 - `PUT /flashcards/{flashcard_id}` - Update a flashcard
 - `DELETE /flashcards/{flashcard_id}` - Delete a flashcard
+
+### Study
+- `POST /study/review/{flashcard_id}` - Record a study review
+
+### Chat
+- `POST /chat` - Get AI chat response
 
 ### Health Check
 - `GET /health` - Health check endpoint
@@ -316,13 +427,13 @@ pytest
 
 ## License
 
-This project is created for educational purposes.
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
 ---
 
 ## Acknowledgments
 
 - Built with FastAPI and React
-- Uses OpenAI API for AI-powered flashcard generation
-- Deployed with Docker
+- Uses OpenRouter API for AI-powered flashcard generation
+- Deployed with Docker on Ubuntu 24.04 VM
 
