@@ -22,16 +22,41 @@ AI-powered generation: instantly converts raw text into structured study cards u
 
 ### Screenshots
 
-**Login Page:**
-![Login Page](hhtps://github.com/millfsw/se-toolkit-hackathon/raw/main/images/log_in.jpeg)
+**Landing Page:**
+![Landing Page](images/landing_page_before_registration.jpeg)
 
-**Generate Flashcards:**
-![Generate Flashcards](https://via.placeholder.com/800x450/2d936c/ffffff?text=Generate+Flashcards)
+**Login:**
+![Login](images/log_in.jpeg)
+
+**Registration:**
+![Registration](images/registration.jpeg)
+
+**Landing After Registration:**
+![Landing After Registration](images/landing_page_after_registration.jpeg)
+
+**Generate Flashcards & Summary:**
+![Generate Flashcards](images/generate_cards_summary.jpeg)
+
+**Flashcards:**
+![Flashcards](images/flashcards.jpeg)
 
 **Study Mode:**
-![Study Mode](https://via.placeholder.com/800x450/0a5a73/ffffff?text=Study+Mode)
+![Study Mode](images/study_mode.jpeg)
 
-> Replace the placeholder images above with actual screenshots of the deployed application.
+**Quiz Mode:**
+![Quiz Mode](images/quiz_mode.jpeg)
+
+**All Cards:**
+![All Cards](images/all_cards.jpeg)
+
+**Summary:**
+![Summary](images/summary.jpeg)
+
+**AI Assistant:**
+![AI Assistant](images/AI_Assistant.jpeg)
+
+**Account Settings:**
+![Account Settings](images/account_settings.jpeg)
 
 ---
 
