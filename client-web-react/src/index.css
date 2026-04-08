@@ -312,3 +312,67 @@ textarea {
   font-size: 14px;
 }
 
+/* Mobile responsive */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px !important;
+    max-width: 100% !important;
+  }
+
+  .card {
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+  }
+
+  .flip-card {
+    height: 220px !important;
+  }
+
+  .flip-card-front,
+  .flip-card-back {
+    padding: 16px !important;
+  }
+
+  .flip-card-front h3,
+  .flip-card-back h3 {
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .flip-card-front p,
+  .flip-card-back p {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+  }
+
+  .summary-content {
+    padding: 14px !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+  }
+
+  .summary-content h1,
+  .summary-content h2,
+  .summary-content h3,
+  .summary-content h4 {
+    font-size: 15px !important;
+    word-break: break-word !important;
+  }
+
+  button {
+    padding: 10px 18px !important;
+    font-size: 14px !important;
+  }
+
+  h1 { font-size: 24px !important; }
+  h2 { font-size: 20px !important; }
+  h3 { font-size: 17px !important; }
+}
+
