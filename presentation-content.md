@@ -71,7 +71,7 @@ Video should cover:
 ## Slide 5: Links
 
 **GitHub Repository:**
-https://github.com/[your-username]/se-toolkit-hackathon
+https://github.com/millfsw/se-toolkit-hackathon
 
 **QR Code for GitHub:**
 *(Generate QR code pointing to your repo)*
