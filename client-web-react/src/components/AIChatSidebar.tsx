@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { apiPath } from '../config/api';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -141,7 +142,11 @@ function AIChatSidebar({ isOpen, onClose, contextText, token }: AIChatSidebarPro
             }}
           >
             <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.5' }}>
-              {msg.content}
+              {msg.role === 'assistant' ? (
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              ) : (
+                msg.content
+              )}
             </div>
           </div>
         ))}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiPath } from '../config/api';
+import ReactMarkdown from 'react-markdown';
 import HeaderBar from '../components/HeaderBar';
 
 interface ChatMessage {
@@ -93,7 +94,11 @@ function AIAssistantPage() {
                 className={`chat-message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}
               >
                 <div className="message-bubble">
-                  <p>{message.content}</p>
+                  {message.role === 'assistant' ? (
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                  ) : (
+                    <p>{message.content}</p>
+                  )}
                 </div>
                 <div className="message-time">
                   {message.timestamp.toLocaleTimeString('ru-RU', {
